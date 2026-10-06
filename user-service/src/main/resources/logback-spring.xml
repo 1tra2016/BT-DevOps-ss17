@@ -2,6 +2,7 @@
 
 <configuration>
 
+    <!-- Ghi log JSON ra file rolling -->
     <appender name="ROLLING_FILE"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
 
@@ -17,12 +18,29 @@
 
         </rollingPolicy>
 
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"app_name":"user-service"}</customFields>
+        </encoder>
 
     </appender>
 
+
+    <!-- Gửi log JSON qua TCP tới Logstash -->
+    <appender name="LOGSTASH"
+              class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+
+        <destination>localhost:5000</destination>
+
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"app_name":"user-service"}</customFields>
+        </encoder>
+
+    </appender>
+
+
     <root level="INFO">
         <appender-ref ref="ROLLING_FILE"/>
+        <appender-ref ref="LOGSTASH"/>
     </root>
 
 </configuration>
