@@ -1,10 +1,12 @@
 version: '3.8'
+
 services:
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
     environment:
       - discovery.type=single-node
-      - xpack.security.enabled=false   # tắt bảo mật để dễ thử nghiệm
+      - xpack.security.enabled=false
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -16,3 +18,15 @@ services:
       - xpack.security.enabled=false
     ports:
       - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.15.0
+    container_name: logstash
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    depends_on:
+      - elasticsearch
